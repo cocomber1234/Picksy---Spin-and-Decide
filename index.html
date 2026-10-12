@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#fffaf1" />
+    <meta
+      name="description"
+      content="A little spin of Picksy helps you choose what to do next."
+    />
+    <title>Picksy — let the wheel decide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="./index.html" aria-label="Picksy home">
+          <span class="brand-mark" aria-hidden="true">✳</span>
+          <span>picksy<span class="brand-period">.</span></span>
+        </a>
+        <p class="header-note"><span aria-hidden="true">✦</span> Good things happen by chance</p>
+        <button class="icon-button header-help" type="button" aria-label="About Picksy">
+          <span aria-hidden="true">?</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="page-shell">
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <div class="eyebrow"><span></span> YOUR FRIENDLY LITTLE DECISION MAKER</div>
+          <h1 id="page-title">Can't decide?<br /><span>Let's make it fun.</span></h1>
+          <p>Drop your options in, give the wheel a spin, and let a little luck choose.</p>
+        </section>
+
+        <section class="decision-layout" aria-label="Picksy decision wheel">
+          <section class="wheel-card card" aria-labelledby="wheel-heading">
+            <div class="card-topline">
+              <div>
+                <p class="section-kicker">TODAY'S BIG QUESTION</p>
+                <h2 id="wheel-heading">What are we in the mood for?</h2>
+              </div>
+              <label class="category-control">
+                <span class="sr-only">Choose a category</span>
+                <select id="category-picker" name="category">
+                  <option value="activities">✨ Activities</option>
+                  <option value="food">🍓 Food</option>
+                  <option value="games">🎲 Games</option>
+                  <option value="movies">🍿 Movies</option>
+                  <option value="custom">⚙️ Custom</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="wheel-stage">
+              <div class="wheel-halo halo-one" aria-hidden="true"></div>
+              <div class="wheel-halo halo-two" aria-hidden="true"></div>
+              <div class="wheel-pointer" aria-hidden="true"></div>
+              <canvas
+                id="decision-wheel"
+                width="600"
+                height="600"
+                role="img"
+                aria-label="A colorful wheel with your choices"
+              >
+                Your choices will appear on the decision wheel.
+              </canvas>
+              <div class="wheel-center" aria-hidden="true"><span>picksy</span><i>✳</i></div>
+            </div>
+
+            <div class="spin-area">
+              <button class="spin-button" id="spin-button" type="button">
+                <span aria-hidden="true">✦</span> SPIN THE WHEEL <span aria-hidden="true">✦</span>
+              </button>
+              <p class="spin-hint"><span aria-hidden="true">↗</span> No pressure. The wheel's got this.</p>
+              <p class="sr-only" id="wheel-status" role="status" aria-live="polite">
+                Ready when you are.
+              </p>
+            </div>
+          </section>
+
+          <aside class="side-column" aria-label="Your choices and saved wheels">
+            <section class="choices-card card" aria-labelledby="choices-heading">
+              <div class="panel-heading">
+                <div>
+                  <p class="section-kicker">THE CONTENDERS</p>
+                  <h2 id="choices-heading">Your choices <span id="choice-count">4</span></h2>
+                </div>
+                <button class="text-button" id="shuffle-button" type="button">
+                  <span aria-hidden="true">⤨</span> Mix it up
+                </button>
+                <button class="text-button danger-button" id="clear-all-button" type="button">
+                  Clear all
+                </button>
+              </div>
+
+              <ul class="choice-list" id="choice-list" aria-label="Current choices">
+                <li class="choice-item"><span class="choice-dot dot-peach"></span><span class="choice-name">Go for a walk</span><button class="choice-edit" type="button" aria-label="Edit Go for a walk">···</button></li>
+                <li class="choice-item"><span class="choice-dot dot-lilac"></span><span class="choice-name">Try a new recipe</span><button class="choice-edit" type="button" aria-label="Edit Try a new recipe">···</button></li>
+                <li class="choice-item"><span class="choice-dot dot-mint"></span><span class="choice-name">Call a friend</span><button class="choice-edit" type="button" aria-label="Edit Call a friend">···</button></li>
+                <li class="choice-item"><span class="choice-dot dot-yellow"></span><span class="choice-name">Have a cozy night</span><button class="choice-edit" type="button" aria-label="Edit Have a cozy night">···</button></li>
+              </ul>
+
+              <form class="add-choice-form" id="choice-form">
+                <label class="sr-only" for="choice-input">Add a choice</label>
+                <input id="choice-input" name="choice" type="text" maxlength="48" placeholder="Add your own idea..." autocomplete="off" />
+                <button type="submit" aria-label="Add choice">+</button>
+              </form>
+              <p class="panel-note">A good wheel needs at least two choices <span aria-hidden="true">☺</span></p>
+            </section>
+
+            <section class="library-card card" aria-label="Saved wheels and results">
+              <div class="library-tabs" role="tablist" aria-label="Your saved items">
+                <button class="library-tab is-active" id="favorites-tab" type="button" role="tab" aria-selected="true" aria-controls="library-content" data-tab="favorites">
+                  <span aria-hidden="true">♡</span> Favorites
+                </button>
+                <button class="library-tab" id="history-tab" type="button" role="tab" aria-selected="false" aria-controls="library-content" data-tab="history">
+                  <span aria-hidden="true">◷</span> History
+                </button>
+              </div>
+              <div class="library-content" id="library-content" role="tabpanel" aria-labelledby="favorites-tab" tabindex="0">
+                <div class="empty-illustration" aria-hidden="true">♡</div>
+                <p class="empty-title">Your favorites live here</p>
+                <p class="empty-copy">Save a wheel you love and find it again anytime.</p>
+              </div>
+              <div class="library-actions">
+                <button class="quiet-button" id="save-button" type="button"><span aria-hidden="true">♡</span> Save wheel</button>
+                <button class="quiet-button" id="share-button" type="button"><span aria-hidden="true">↗</span> Share</button>
+                <button class="quiet-button clear-history" id="clear-history" type="button" hidden>Clear history</button>
+              </div>
+            </section>
+          </aside>
+        </section>
+
+        <footer class="page-footer">
+          <span>Made for the moments when “you choose” goes in circles.</span>
+          <span aria-hidden="true">✳ &nbsp; picksy</span>
+        </footer>
+      </main>
+    </div>
+
+    <dialog class="name-dialog" id="name-dialog" aria-labelledby="name-title">
+      <form id="name-form" method="dialog" class="name-form">
+        <div class="dialog-header">
+          <h2 id="name-title">Name this wheel</h2>
+          <button class="dialog-close" id="name-close" type="button" aria-label="Close name dialog">×</button>
+        </div>
+        <label class="field-label" id="name-label" for="name-input">Wheel name</label>
+        <input id="name-input" name="wheelName" type="text" maxlength="40" autocomplete="off" />
+        <div class="name-actions">
+          <button class="quiet-button" id="name-cancel" type="button">Cancel</button>
+          <button class="spin-button" id="name-submit" type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="result-dialog" id="result-dialog" aria-labelledby="result-title">
+      <form method="dialog" class="dialog-close-form">
+        <button class="dialog-close" id="result-close" type="submit" aria-label="Close result">×</button>
+      </form>
+      <div class="result-sparkle" aria-hidden="true">✦</div>
+      <p class="section-kicker">THE WHEEL HAS SPOKEN</p>
+      <h2 id="result-title">It's time for…</h2>
+      <p class="result-choice" id="result-choice"></p>
+      <p class="result-category" id="result-category"></p>
+      <div class="result-actions">
+        <button class="spin-button" id="spin-again" type="button">SPIN AGAIN</button>
+        <button class="quiet-button" id="result-save" type="button">♡ Save this wheel</button>
+        <button class="quiet-button" id="result-share" type="button">↗ Share</button>
+      </div>
+    </dialog>
+    <div class="toast" id="toast" aria-hidden="true"></div>
+  </body>
+</html>
