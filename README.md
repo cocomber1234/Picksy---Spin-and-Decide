@@ -4,7 +4,7 @@
 
 Picksy is a fun decision-making website for people who cannot choose what to do. Add your options, spin the colorful wheel, and let Picksy pick for you.
 
-🔗 **Live demo:** `https://<your-username>.github.io/<repo-name>/` *(replace with your real link after deploying)*
+🔗 **Live demo:** ` https://cocomber1234.github.io/Picksy---Spin-and-Decide/` 
 
 ---
 
@@ -79,31 +79,6 @@ npx serve
 ```
 
 Then open `http://localhost:8000`.
-
----
-
-## 🌐 Deploy for Free with GitHub Pages
-
-Picksy is a static site, so it can be hosted for free on GitHub Pages.
-
-1. Push the project to a GitHub repository.
-2. Go to **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to **Deploy from a branch**.
-4. Choose the **main** branch and the **/ (root)** folder, then click **Save**.
-5. Wait a minute or two. Your site will be live at:
-
-```
-https://<your-username>.github.io/<repo-name>/
-```
-
-Tips for a smooth deploy:
-
-- Keep `index.html` in the root of the repository.
-- Use **relative paths** for CSS, JS, and images (for example `css/styles.css`, not `/css/styles.css`). GitHub Pages serves project sites from a subfolder, so paths that start with `/` will break.
-- Share links keep working because they carry the wheel inside the URL, so no server is needed.
-- Every push to `main` updates the live site automatically.
-
----
 
 ## 🎮 How to Use
 
