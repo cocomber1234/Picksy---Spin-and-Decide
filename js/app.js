@@ -1,6 +1,10 @@
 import { createChoicesPanel } from "./choices.js";
 import { celebrate, decodeWheelState, shareChoices } from "./effects.js";
-import { populateCategoryPicker, getPresetChoices, PRESETS } from "./presets.js";
+import {
+  populateCategoryPicker,
+  getPresetChoices,
+  PRESETS,
+} from "./presets.js";
 import {
   loadCurrent,
   loadFavorites,
@@ -60,27 +64,34 @@ let pendingNameAction = null;
 
 let previousScrollY = window.scrollY;
 let scrollFrameRequested = false;
-window.addEventListener("scroll", () => {
-  if (scrollFrameRequested) return;
-  scrollFrameRequested = true;
-  requestAnimationFrame(() => {
-    const nextScrollY = window.scrollY;
-    if (nextScrollY < 60 || nextScrollY < previousScrollY - 4) {
-      elements.header.classList.remove("is-hidden");
-    } else if (nextScrollY > previousScrollY + 4) {
-      elements.header.classList.add("is-hidden");
-    }
-    previousScrollY = nextScrollY;
-    scrollFrameRequested = false;
-  });
-}, { passive: true });
+window.addEventListener(
+  "scroll",
+  () => {
+    if (scrollFrameRequested) return;
+    scrollFrameRequested = true;
+    requestAnimationFrame(() => {
+      const nextScrollY = window.scrollY;
+      if (nextScrollY < 60 || nextScrollY < previousScrollY - 4) {
+        elements.header.classList.remove("is-hidden");
+      } else if (nextScrollY > previousScrollY + 4) {
+        elements.header.classList.add("is-hidden");
+      }
+      previousScrollY = nextScrollY;
+      scrollFrameRequested = false;
+    });
+  },
+  { passive: true },
+);
 
 function announce(message) {
   elements.status.textContent = message;
   elements.toast.textContent = message;
   elements.toast.classList.add("is-visible");
   window.clearTimeout(toastTimeout);
-  toastTimeout = window.setTimeout(() => elements.toast.classList.remove("is-visible"), 2600);
+  toastTimeout = window.setTimeout(
+    () => elements.toast.classList.remove("is-visible"),
+    2600,
+  );
 }
 
 function getCategoryLabel(category) {
@@ -98,7 +109,12 @@ function getWheelNameFromCategory(category) {
   return `${getCategoryLabel(category)} wheel`;
 }
 
-function openNameDialog(title, defaultValue, onConfirm, labelText = "Wheel name") {
+function openNameDialog(
+  title,
+  defaultValue,
+  onConfirm,
+  labelText = "Wheel name",
+) {
   pendingNameAction = onConfirm;
   elements.nameTitle.textContent = title;
   elements.nameLabel.textContent = labelText;
@@ -113,7 +129,10 @@ function persistCurrent(successMessage) {
     category: elements.category.value,
     choices: choices.getChoices(),
   });
-  if (!saved) announce("Your browser couldn't save this wheel. Check its storage settings.");
+  if (!saved)
+    announce(
+      "Your browser couldn't save this wheel. Check its storage settings.",
+    );
   else if (successMessage) announce(successMessage);
   return saved;
 }
@@ -132,25 +151,35 @@ function setSpinning(isSpinning) {
   elements.share.disabled = isSpinning;
   elements.input.disabled = isSpinning;
   elements.form.querySelector("button").disabled = isSpinning;
-  elements.list.querySelectorAll("button").forEach((button) => { button.disabled = isSpinning; });
-  elements.library.querySelectorAll("button").forEach((button) => { button.disabled = isSpinning; });
+  elements.list.querySelectorAll("button").forEach((button) => {
+    button.disabled = isSpinning;
+  });
+  elements.library.querySelectorAll("button").forEach((button) => {
+    button.disabled = isSpinning;
+  });
   elements.spin.disabled = isSpinning || choices.getChoices().length < 2;
 }
 
 function validChoices(value) {
-  return Array.isArray(value)
-    && value.length > 0
-    && value.length <= MAX_CHOICES
-    && value.every((choice) => typeof choice === "string"
-      && choice.trim().length > 0
-      && choice.trim().length <= MAX_CHOICE_LENGTH);
+  return (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.length <= MAX_CHOICES &&
+    value.every(
+      (choice) =>
+        typeof choice === "string" &&
+        choice.trim().length > 0 &&
+        choice.trim().length <= MAX_CHOICE_LENGTH,
+    )
+  );
 }
 
 function createWheelInstance() {
   return createWheel(elements.canvas, elements.status, (winner) => {
     const entry = {
       choice: winner,
-      wheelName: currentWheelName || getWheelNameFromCategory(elements.category.value),
+      wheelName:
+        currentWheelName || getWheelNameFromCategory(elements.category.value),
       category: elements.category.value,
       createdAt: new Date().toISOString(),
     };
@@ -161,7 +190,10 @@ function createWheelInstance() {
     elements.resultCategory.textContent = `Picked from ${elements.category.selectedOptions[0].textContent.trim()}`;
     if (!elements.resultDialog.open) elements.resultDialog.showModal();
     celebrate();
-    if (!saved) announce("The result was picked, but your browser couldn't save history.");
+    if (!saved)
+      announce(
+        "The result was picked, but your browser couldn't save history.",
+      );
     refreshWheel();
   });
 }
@@ -181,12 +213,16 @@ function renderLibrary() {
     icon.textContent = activeTab === "favorites" ? "♡" : "◷";
     const title = document.createElement("p");
     title.className = "empty-title";
-    title.textContent = activeTab === "favorites" ? "Your favorites live here" : "No spins just yet";
+    title.textContent =
+      activeTab === "favorites"
+        ? "Your favorites live here"
+        : "No spins just yet";
     const copy = document.createElement("p");
     copy.className = "empty-copy";
-    copy.textContent = activeTab === "favorites"
-      ? "Save a wheel you love and find it again anytime."
-      : "Your picks will show up here after a spin.";
+    copy.textContent =
+      activeTab === "favorites"
+        ? "Save a wheel you love and find it again anytime."
+        : "Your picks will show up here after a spin.";
     empty.append(icon, title, copy);
     elements.library.append(empty);
     return;
@@ -209,7 +245,9 @@ function renderLibrary() {
     } else {
       const resultName = entry.wheelName || entry.name || "Current wheel";
       title.textContent = entry.choice;
-      detail.textContent = `${resultName} · ${new Date(entry.createdAt).toLocaleString([], {
+      detail.textContent = `${resultName} · ${new Date(
+        entry.createdAt,
+      ).toLocaleString([], {
         dateStyle: "medium",
         timeStyle: "short",
       })}`;
@@ -226,7 +264,10 @@ function renderLibrary() {
     load.dataset.choice = entry.choice ?? "";
     load.dataset.index = String(entries.indexOf(entry));
     load.textContent = activeTab === "favorites" ? "Load" : "Again";
-    load.setAttribute("aria-label", `${load.textContent} ${activeTab === "favorites" ? "favorite wheel" : entry.choice}`);
+    load.setAttribute(
+      "aria-label",
+      `${load.textContent} ${activeTab === "favorites" ? "favorite wheel" : entry.choice}`,
+    );
     actions.append(load);
 
     if (activeTab === "favorites") {
@@ -236,7 +277,10 @@ function renderLibrary() {
       rename.dataset.action = "rename";
       rename.dataset.id = entry.id;
       rename.textContent = "Rename";
-      rename.setAttribute("aria-label", `Rename saved wheel ${entry.name || "saved wheel"}`);
+      rename.setAttribute(
+        "aria-label",
+        `Rename saved wheel ${entry.name || "saved wheel"}`,
+      );
       actions.append(rename);
 
       const remove = document.createElement("button");
@@ -282,8 +326,11 @@ function loadSharedWheel() {
 
 const sharedWheel = loadSharedWheel();
 const savedCurrent = loadCurrent();
-currentWheelName = savedCurrent?.name || getWheelNameFromCategory(savedCurrent?.category || "activities");
-const initial = sharedWheel ?? (savedCurrent?.choices?.length ? savedCurrent : null);
+currentWheelName =
+  savedCurrent?.name ||
+  getWheelNameFromCategory(savedCurrent?.category || "activities");
+const initial =
+  sharedWheel ?? (savedCurrent?.choices?.length ? savedCurrent : null);
 currentCategory = PRESETS[initial?.category] ? initial.category : "activities";
 if (initial) {
   populateCategoryPicker(elements.category, currentCategory);
@@ -298,8 +345,15 @@ renderLibrary();
 elements.category.addEventListener("change", () => {
   const previous = choices.getChoices();
   const next = getPresetChoices(elements.category.value);
-  const isPreset = Object.values(PRESETS).some((preset) => JSON.stringify(preset) === JSON.stringify(previous));
-  if (!isPreset && !window.confirm("Changing category will replace your current choices. Continue?")) {
+  const isPreset = Object.values(PRESETS).some(
+    (preset) => JSON.stringify(preset) === JSON.stringify(previous),
+  );
+  if (
+    !isPreset &&
+    !window.confirm(
+      "Changing category will replace your current choices. Continue?",
+    )
+  ) {
     populateCategoryPicker(elements.category, currentCategory);
     return;
   }
@@ -326,7 +380,11 @@ elements.form.addEventListener("submit", (event) => {
     announce(`A wheel can have up to ${MAX_CHOICES} choices.`);
     return;
   }
-  if (current.some((choice) => choice.toLocaleLowerCase() === value.toLocaleLowerCase())) {
+  if (
+    current.some(
+      (choice) => choice.toLocaleLowerCase() === value.toLocaleLowerCase(),
+    )
+  ) {
     announce("That choice is already on your wheel.");
     return;
   }
@@ -343,20 +401,37 @@ elements.list.addEventListener("click", (event) => {
   const current = item.querySelector(".choice-name").textContent;
   const currentChoices = choices.getChoices();
   if (event.target.closest(".choice-edit")) {
-    openNameDialog("Edit this choice", current, (value) => {
-      const trimmed = value.trim();
-      if (!trimmed || trimmed.length > MAX_CHOICE_LENGTH) {
-        announce(`Enter a choice between 1 and ${MAX_CHOICE_LENGTH} characters.`);
-        return;
-      }
-      if (currentChoices.some((choice) => choice !== current && choice.toLocaleLowerCase() === trimmed.toLocaleLowerCase())) {
-        announce("That choice is already on your wheel.");
-        return;
-      }
-      choices.setChoices(currentChoices.map((choice) => choice === current ? trimmed : choice));
-      persistCurrent("Choice updated.");
-      refreshWheel();
-    }, "Choice");
+    openNameDialog(
+      "Edit this choice",
+      current,
+      (value) => {
+        const trimmed = value.trim();
+        if (!trimmed || trimmed.length > MAX_CHOICE_LENGTH) {
+          announce(
+            `Enter a choice between 1 and ${MAX_CHOICE_LENGTH} characters.`,
+          );
+          return;
+        }
+        if (
+          currentChoices.some(
+            (choice) =>
+              choice !== current &&
+              choice.toLocaleLowerCase() === trimmed.toLocaleLowerCase(),
+          )
+        ) {
+          announce("That choice is already on your wheel.");
+          return;
+        }
+        choices.setChoices(
+          currentChoices.map((choice) =>
+            choice === current ? trimmed : choice,
+          ),
+        );
+        persistCurrent("Choice updated.");
+        refreshWheel();
+      },
+      "Choice",
+    );
     return;
   }
   if (!event.target.closest(".choice-remove")) return;
@@ -413,8 +488,11 @@ elements.library.addEventListener("click", (event) => {
   if (action === "load") {
     const favorite = favorites.find((item) => item.id === id);
     if (!favorite) return;
-    currentCategory = PRESETS[favorite.category] ? favorite.category : "activities";
-    currentWheelName = favorite.name || getWheelNameFromCategory(currentCategory);
+    currentCategory = PRESETS[favorite.category]
+      ? favorite.category
+      : "activities";
+    currentWheelName =
+      favorite.name || getWheelNameFromCategory(currentCategory);
     populateCategoryPicker(elements.category, currentCategory);
     choices.setChoices(favorite.choices);
     persistCurrent("Favorite wheel loaded.");
@@ -422,27 +500,35 @@ elements.library.addEventListener("click", (event) => {
   } else if (action === "rename") {
     const favorite = favorites.find((item) => item.id === id);
     if (!favorite) return;
-    openNameDialog("Rename this wheel", favorite.name || "Saved wheel", (value) => {
-      const trimmed = value.trim();
-      if (!trimmed) {
-        announce("Please enter a name for this saved wheel.");
-        return;
-      }
-      favorite.name = trimmed;
-      if (!saveFavorites(favorites)) {
-        announce("Your browser couldn't update this favorite. Check its storage settings.");
-        return;
-      }
-      renderLibrary();
-      announce("Favorite renamed.");
-    });
+    openNameDialog(
+      "Rename this wheel",
+      favorite.name || "Saved wheel",
+      (value) => {
+        const trimmed = value.trim();
+        if (!trimmed) {
+          announce("Please enter a name for this saved wheel.");
+          return;
+        }
+        favorite.name = trimmed;
+        if (!saveFavorites(favorites)) {
+          announce(
+            "Your browser couldn't update this favorite. Check its storage settings.",
+          );
+          return;
+        }
+        renderLibrary();
+        announce("Favorite renamed.");
+      },
+    );
   } else if (action === "delete") {
     if (!window.confirm("Remove this saved wheel from Favorites?")) return;
     const previousFavorites = favorites;
     favorites = favorites.filter((item) => item.id !== id);
     if (!saveFavorites(favorites)) {
       favorites = previousFavorites;
-      announce("Your browser couldn't update favorites. Check its storage settings.");
+      announce(
+        "Your browser couldn't update favorites. Check its storage settings.",
+      );
       return;
     }
     renderLibrary();
@@ -451,10 +537,17 @@ elements.library.addEventListener("click", (event) => {
     const entry = history[Number(button.dataset.index)];
     if (entry) {
       currentCategory = PRESETS[entry.category] ? entry.category : "activities";
-      currentWheelName = entry.wheelName || entry.name || getWheelNameFromCategory(currentCategory);
+      currentWheelName =
+        entry.wheelName ||
+        entry.name ||
+        getWheelNameFromCategory(currentCategory);
       populateCategoryPicker(elements.category, currentCategory);
-      if (PRESETS[entry.category]) choices.setChoices(getPresetChoices(entry.category));
-      if (!choices.getChoices().includes(choice) && choices.getChoices().length < MAX_CHOICES) {
+      if (PRESETS[entry.category])
+        choices.setChoices(getPresetChoices(entry.category));
+      if (
+        !choices.getChoices().includes(choice) &&
+        choices.getChoices().length < MAX_CHOICES
+      ) {
         choices.setChoices([...choices.getChoices(), choice]);
       }
       persistCurrent(`Added “${choice}” to the current wheel.`);
@@ -493,9 +586,10 @@ elements.save.addEventListener("click", () => {
     return;
   }
 
-  const proposedName = currentWheelName && currentWheelName !== "Current wheel"
-    ? currentWheelName
-    : getWheelNameFromCategory(elements.category.value);
+  const proposedName =
+    currentWheelName && currentWheelName !== "Current wheel"
+      ? currentWheelName
+      : getWheelNameFromCategory(elements.category.value);
 
   openNameDialog("Name this wheel", proposedName, (name) => {
     const value = name.trim();
@@ -505,14 +599,21 @@ elements.save.addEventListener("click", () => {
     }
 
     const wheel = {
-      id: crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      id:
+        crypto.randomUUID?.() ??
+        `${Date.now()}-${Math.random().toString(36).slice(2)}`,
       name: value,
       category: elements.category.value,
       choices: choices.getChoices(),
       createdAt: new Date().toISOString(),
     };
-    if (favorites.some((entry) => entry.category === wheel.category
-      && JSON.stringify(entry.choices) === JSON.stringify(wheel.choices))) {
+    if (
+      favorites.some(
+        (entry) =>
+          entry.category === wheel.category &&
+          JSON.stringify(entry.choices) === JSON.stringify(wheel.choices),
+      )
+    ) {
       announce("This wheel is already in your favorites.");
       return;
     }
@@ -521,7 +622,9 @@ elements.save.addEventListener("click", () => {
     currentWheelName = value;
     if (!saveFavorites(favorites)) {
       favorites = previousFavorites;
-      announce("Your browser couldn't save this favorite. Check its storage settings.");
+      announce(
+        "Your browser couldn't save this favorite. Check its storage settings.",
+      );
       return;
     }
     setActiveTab("favorites");
@@ -530,15 +633,23 @@ elements.save.addEventListener("click", () => {
 });
 
 document.querySelector(".header-help").addEventListener("click", () => {
-  announce("Add at least two choices, pick a category, then spin when you’re ready.");
+  announce(
+    "Add at least two choices, pick a category, then spin when you’re ready.",
+  );
 });
 
 async function shareCurrent() {
   try {
-    const result = await shareChoices(choices.getChoices(), elements.category.value);
+    const result = await shareChoices(
+      choices.getChoices(),
+      elements.category.value,
+    );
     if (result === "copied") announce("Share link copied!");
     else if (result === "shared") announce("Wheel shared.");
-    else announce("Sharing isn't available. Copy the page URL to share this wheel.");
+    else
+      announce(
+        "Sharing isn't available. Copy the page URL to share this wheel.",
+      );
   } catch {
     announce("Sharing was cancelled or isn't available right now.");
   }
@@ -555,12 +666,18 @@ document.querySelector("#result-save").addEventListener("click", () => {
   elements.save.click();
 });
 elements.clearHistory.addEventListener("click", () => {
-  if (!history.length || !window.confirm("Clear all spin history? This can't be undone.")) return;
+  if (
+    !history.length ||
+    !window.confirm("Clear all spin history? This can't be undone.")
+  )
+    return;
   const previousHistory = history;
   history = [];
   if (!saveHistory(history)) {
     history = previousHistory;
-    announce("Your browser couldn't clear history. Check its storage settings.");
+    announce(
+      "Your browser couldn't clear history. Check its storage settings.",
+    );
     return;
   }
   renderLibrary();

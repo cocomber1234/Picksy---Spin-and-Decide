@@ -1,6 +1,13 @@
 const COLORS = ["#ffcf84", "#a9e2cd", "#c5b2f2", "#ff9a86", "#f6b6d1"];
 const TAU = Math.PI * 2;
 
+function getTargetRotation(currentRotation, winnerIndex, choiceCount, extraTurns) {
+  const slice = TAU / choiceCount;
+  const desiredRotation = -(winnerIndex + 0.5) * slice;
+  const remainingRotation = ((desiredRotation - currentRotation) % TAU + TAU) % TAU;
+  return currentRotation + extraTurns * TAU + remainingRotation;
+}
+
 export function drawWheel(choices = [], canvas, rotation = 0) {
   if (!canvas) return;
 
@@ -64,11 +71,8 @@ export function spinWheel(canvas, choices, onResult, options = {}) {
 
   const currentRotation = Number(canvas.dataset.rotation || "0");
   const winnerIndex = Math.floor(Math.random() * choices.length);
-  const slice = TAU / choices.length;
-  const centerAngle = -Math.PI / 2 + (winnerIndex + 0.5) * slice;
   const extraTurns = reducedMotion.matches ? 2 : 5 + Math.floor(Math.random() * 3);
-  const finishRotation = (currentRotation + extraTurns * TAU - centerAngle) % TAU;
-  const targetRotation = finishRotation + (TAU - finishRotation % TAU);
+  const targetRotation = getTargetRotation(currentRotation, winnerIndex, choices.length, extraTurns);
   const duration = reducedMotion.matches ? 900 : 4500;
   const startedAt = performance.now();
 
@@ -120,11 +124,9 @@ export function createWheel(canvas, status, onWinner, onSpinState) {
     spinning = true;
     onSpinState?.(true);
     const winnerIndex = Math.floor(Math.random() * currentChoices.length);
-    const slice = TAU / currentChoices.length;
-    const centerAngle = -Math.PI / 2 + (winnerIndex + 0.5) * slice;
     const extraTurns = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 2 : 6 + Math.floor(Math.random() * 3);
     const startRotation = rotation;
-    const targetRotation = startRotation + extraTurns * TAU - centerAngle;
+    const targetRotation = getTargetRotation(startRotation, winnerIndex, currentChoices.length, extraTurns);
     const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 900 : 4800;
     const startedAt = performance.now();
 
