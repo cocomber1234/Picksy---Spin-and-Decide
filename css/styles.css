@@ -154,7 +154,7 @@ h2 { margin: 0; font: 800 18px/1.25 "Nunito", sans-serif; letter-spacing: -.35px
   box-shadow: 0 3px 9px rgb(41 36 65 / 22%);
   font: 900 11px "Nunito", sans-serif;
 }
-.wheel-mark { width: 18px; height: 18px; margin-top: 2px; }
+.wheel-mark { width: 12px; height: 12px; margin-top: 1px; }
 .spin-area { display: flex; flex-direction: column; align-items: center; gap: 9px; }
 .spin-button {
   min-width: 220px;
