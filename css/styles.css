@@ -68,7 +68,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   text-decoration: none;
   justify-self: start;
 }
-.brand-mark { color: var(--coral); font-size: 26px; line-height: 1; }
+.brand-mark { display: block; width: 36px; height: 36px; flex: 0 0 auto; }
 .brand-period { color: var(--purple); }
 .header-note { margin: 0; color: var(--muted); font-size: 13px; font-weight: 600; text-align: center; }
 .header-note span { margin-right: 6px; color: #f5b940; }
@@ -154,7 +154,7 @@ h2 { margin: 0; font: 800 18px/1.25 "Nunito", sans-serif; letter-spacing: -.35px
   box-shadow: 0 3px 9px rgb(41 36 65 / 22%);
   font: 900 11px "Nunito", sans-serif;
 }
-.wheel-center i { color: var(--yellow); font-size: 13px; font-style: normal; line-height: 1; }
+.wheel-mark { width: 18px; height: 18px; margin-top: 2px; }
 .spin-area { display: flex; flex-direction: column; align-items: center; gap: 9px; }
 .spin-button {
   min-width: 220px;
@@ -227,7 +227,8 @@ h2 { margin: 0; font: 800 18px/1.25 "Nunito", sans-serif; letter-spacing: -.35px
 .quiet-button span { margin-right: 4px; color: var(--purple); font-size: 14px; }
 .quiet-button:hover { color: var(--purple-dark); background: #f4f0ff; }
 .page-footer { display: flex; justify-content: space-between; padding: 24px 3px 26px; color: #aaa4b1; font-size: 10px; }
-.page-footer span:last-child { color: #89829a; font-family: "Nunito", sans-serif; font-weight: 900; letter-spacing: .2px; }
+.page-footer .footer-brand { display: inline-flex; align-items: center; gap: 6px; color: #89829a; font-family: "Nunito", sans-serif; font-weight: 900; letter-spacing: .2px; }
+.footer-brand img { width: 16px; height: 16px; }
 .toast { position: fixed; z-index: 5; right: 20px; bottom: 20px; max-width: min(360px, calc(100vw - 40px)); padding: 12px 17px; border: 1px solid rgb(255 255 255 / 20%); border-radius: 13px; color: white; background: #302948; box-shadow: 0 8px 25px rgb(41 36 65 / 20%); font-size: 13px; opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .2s ease, transform .2s ease; }
 .toast.is-visible { opacity: 1; transform: translateY(0); }
 .name-dialog,
